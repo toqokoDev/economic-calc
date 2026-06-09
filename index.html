@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Калькулятор экономической части</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>6 Экономическая часть</h1>
+      <p>Расчёт трудоёмкости, себестоимости и рентабельности ПС ВТ по методическим указаниям</p>
+    </header>
+
+    <section>
+      <h2>6.1 Общая характеристика разрабатываемого ПС ВТ</h2>
+      <p class="table-title">Таблица 5 – Общая характеристика разрабатываемого продукта</p>
+      <div class="fields-grid fields-grid--2">
+        <label class="field field--wide">
+          <span class="field__label">Название программного продукта</span>
+          <input class="field__control" type="text" id="productName">
+        </label>
+        <label class="field">
+          <span class="field__label">Тип ПС</span>
+          <input class="field__control" type="text" id="productType">
+        </label>
+        <label class="field">
+          <span class="field__label">Среда разработки</span>
+          <input class="field__control" type="text" id="devEnvironment">
+        </label>
+        <label class="field">
+          <span class="field__label">Группа сложности (1–3)</span>
+          <select class="field__control" id="complexityGroup">
+            <option value="1">1 — высокая</option>
+            <option value="2" selected>2 — средняя</option>
+            <option value="3">3 — низкая</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field__label">Σ K<sub>i</sub> &nbsp;(K<sub>с</sub> = 1 + ΣK<sub>i</sub>)</span>
+          <input class="field__control" type="number" id="complexityKi" step="0.01" min="0">
+        </label>
+        <label class="field">
+          <span class="field__label">Группа новизны</span>
+          <select class="field__control" id="noveltyGroup">
+            <option value="A">А</option>
+            <option value="B" selected>Б</option>
+            <option value="V">В</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field__label">Коэффициент новизны K<sub>н</sub></span>
+          <select class="field__control" id="noveltyKn"></select>
+        </label>
+        <label class="field">
+          <span class="field__label">Доля стандартных модулей, %</span>
+          <input class="field__control" type="number" id="modulesPercent" min="0" max="100">
+        </label>
+        <label class="field">
+          <span class="field__label">Коэффициент K<sub>т</sub> (стандартные модули)</span>
+          <input class="field__control" type="number" id="modulesKt" step="0.01" min="0" max="2">
+        </label>
+        <label class="field field--wide">
+          <span class="field__label">Основные функции ПП</span>
+          <textarea class="field__control field__control--textarea" id="productFunctions"></textarea>
+        </label>
+      </div>
+    </section>
+
+    <section>
+      <h2>6.2 Определение объёма ПС ВТ</h2>
+      <div class="formula-list">
+        <div class="formula">
+          <span class="formula__expr">V<sub>o</sub> = ∑<sub>i=1</sub><sup>n</sup> V<sub>i</sub></span>
+          <span class="formula__num">(1)</span>
+        </div>
+      </div>
+      <div class="section-actions">
+        <p class="table-title">Таблица 6 – Перечень и объём функций программного обеспечения</p>
+        <button type="button" class="btn" id="btnAddFunction">+ Добавить функцию</button>
+      </div>
+      <div class="table-wrap">
+        <table class="functions-table">
+          <thead>
+            <tr>
+              <th>Код</th>
+              <th>Наименование функции</th>
+              <th>По каталогу V<sub>i</sub></th>
+              <th>Уточнённый V<sub>yi</sub></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="functionsBody"></tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="2">ИТОГО (сумма строк)</td>
+              <td class="num" id="volCatalogTotal">0</td>
+              <td class="num" id="volRefinedSum">0</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="field-box">
+        <label class="field">
+          <span class="field__label">Уточнённый объём V<sub>y</sub> для расчёта T<sub>н</sub> (LOC)</span>
+          <input class="field__control" type="number" id="refinedVolumeOverride" min="0" step="1">
+        </label>
+        <p class="field__hint">Если пусто — используется сумма столбца «уточнённый».</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>6.3 Расчёт трудоёмкости</h2>
+      <div class="formula-list">
+        <div class="formula">
+          <span class="formula__expr">K<sub>с</sub> = 1 + ∑ K<sub>i</sub></span>
+          <span class="formula__num">(2)</span>
+        </div>
+      </div>
+      <p class="info-line" id="laborRowInfo"></p>
+      <p class="stat-inline">Нормативная трудоёмкость T<sub>н</sub> = <strong id="normativeLabor">0</strong> чел.-дн.</p>
+      <p class="table-title">Таблица 7 – Расчёт общей трудоёмкости разработки ПО</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Показатели</th>
+              <th>ТЗ</th>
+              <th>ЭП</th>
+              <th>ТП</th>
+              <th>РП</th>
+              <th>ВН</th>
+              <th>Итого</th>
+            </tr>
+          </thead>
+          <tbody id="laborTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>6.4–6.7 Заработная плата и отчисления</h2>
+      <div class="fields-grid">
+        <label class="field">
+          <span class="field__label">C<sub>зм</sub><sup>1</sup> — тариф 1-го разряда, руб.</span>
+          <input class="field__control" type="number" id="tariffGrade1" step="0.01">
+        </label>
+        <label class="field">
+          <span class="field__label">Тарифный коэффициент K<sub>т</sub></span>
+          <input class="field__control" type="number" id="tariffCoeff" step="0.01">
+        </label>
+        <label class="field">
+          <span class="field__label">Рабочих дней в месяце</span>
+          <input class="field__control" type="number" id="workDaysPerMonth" step="0.1">
+        </label>
+        <label class="field">
+          <span class="field__label">K<sub>п</sub> — естественные потери</span>
+          <input class="field__control" type="number" id="naturalLossKp" step="0.01">
+        </label>
+        <label class="field">
+          <span class="field__label">K<sub>пр</sub> — премирование</span>
+          <input class="field__control" type="number" id="bonusKpr" step="0.01">
+        </label>
+        <label class="field">
+          <span class="field__label">H<sub>дз</sub>, % — доп. зарплата</span>
+          <input class="field__control" type="number" id="extraSalaryPercent" step="0.1">
+        </label>
+        <label class="field">
+          <span class="field__label">H<sub>фсзн</sub>, %</span>
+          <input class="field__control" type="number" id="fsznPercent" step="0.1">
+        </label>
+        <label class="field">
+          <span class="field__label">H<sub>бгс</sub>, %</span>
+          <input class="field__control" type="number" id="bgsPercent" step="0.01">
+        </label>
+        <label class="field">
+          <span class="field__label">Количество программистов, чел.</span>
+          <input class="field__control" type="number" id="programmersCount" min="1" step="1">
+        </label>
+      </div>
+      <div class="formula-list">
+        <div class="formula">
+          <span class="formula__expr">C<sub>оз</sub> = C<sub>зд</sub> · T<sub>o</sub> · K<sub>п</sub> · K<sub>пр</sub></span>
+          <span class="formula__num">(4)</span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>6.9–6.10 Электроэнергия и амортизация</h2>
+      <div class="fields-grid">
+        <label class="field">
+          <span class="field__label">Тариф K<sub>э</sub>, руб./кВт·ч</span>
+          <input class="field__control" type="number" id="electricityTariff" step="0.00001">
+        </label>
+        <label class="field">
+          <span class="field__label">T<sub>э</sub>, кВт·ч в день</span>
+          <input class="field__control" type="number" id="electricityKwhPerDay" step="0.1">
+        </label>
+        <label class="field">
+          <span class="field__label">Наименование ОС</span>
+          <input class="field__control" type="text" id="assetName">
+        </label>
+        <label class="field">
+          <span class="field__label">Количество, ед.</span>
+          <input class="field__control" type="number" id="assetCount" min="1">
+        </label>
+        <label class="field">
+          <span class="field__label">Первоначальная стоимость P<sub>с</sub>, руб.</span>
+          <input class="field__control" type="number" id="assetCost" step="0.01">
+        </label>
+        <label class="field">
+          <span class="field__label">Срок службы T<sub>н</sub>, лет</span>
+          <input class="field__control" type="number" id="assetServiceLife" min="1">
+        </label>
+        <label class="field">
+          <span class="field__label">Ф<sub>э</sub> — эффективный фонд, дн.</span>
+          <input class="field__control" type="number" id="effectiveFundDays">
+        </label>
+        <label class="field">
+          <span class="field__label">Расходы на материалы, руб.</span>
+          <input class="field__control" type="number" id="materialsCost" step="0.01" min="0">
+        </label>
+      </div>
+      <div class="formula-list">
+        <div class="formula">
+          <span class="formula__expr">Э = K<sub>э</sub> · T<sub>э</sub> · Д</span>
+          <span class="formula__num">(8)</span>
+        </div>
+      </div>
+      <p class="table-title">Таблица 8 – Расчёт амортизации основных средств</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Наименование</th>
+              <th>Кол-во</th>
+              <th>P<sub>с</sub>, руб.</th>
+              <th>N<sub>а</sub>, %</th>
+              <th>АО<sub>г</sub>, руб.</th>
+              <th>Период, дн.</th>
+              <th>АО<sub>пп</sub>, руб.</th>
+            </tr>
+          </thead>
+          <tbody id="depreciationBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>6.11–6.16 Прочие затраты, себестоимость, цена</h2>
+      <div class="fields-grid">
+        <label class="field">
+          <span class="field__label">H<sub>пз</sub>, % — прочие затраты</span>
+          <input class="field__control" type="number" id="otherCostsPercent" step="0.1">
+        </label>
+        <label class="field">
+          <span class="field__label">H<sub>нр</sub>, % — накладные расходы</span>
+          <input class="field__control" type="number" id="overheadPercent" step="0.1">
+        </label>
+        <label class="field">
+          <span class="field__label">H<sub>рса</sub>, % — сопровождение</span>
+          <input class="field__control" type="number" id="supportPercent" step="0.1">
+        </label>
+        <label class="field">
+          <span class="field__label">Ц<sub>р</sub> — рыночная цена с НДС, руб.</span>
+          <input class="field__control" type="number" id="marketPrice" step="0.01">
+        </label>
+      </div>
+      <div class="formula-list">
+        <div class="formula">
+          <span class="formula__expr">C<sub>р</sub> = C<sub>оз</sub> + C<sub>дз</sub> + C<sub>фсзн</sub> + C<sub>бгс</sub> + Э + АО<sub>пп</sub> + C<sub>пз</sub> + C<sub>нр</sub></span>
+          <span class="formula__num">(14)</span>
+        </div>
+        <div class="formula">
+          <span class="formula__expr">C<sub>п</sub> = C<sub>р</sub> + C<sub>рса</sub></span>
+          <span class="formula__num">(16)</span>
+        </div>
+        <div class="formula">
+          <span class="formula__expr">П<sub>пс</sub> = Ц<sub>р</sub> / 1,2 − C<sub>п</sub></span>
+          <span class="formula__num">(17)</span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>6.17 Результаты расчётов</h2>
+      <div id="summaryBlocks" class="results-grid"></div>
+      <p class="table-title">Таблица 9 – Результаты расчётов</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Наименование показателя</th>
+              <th>Единица</th>
+              <th>Значение</th>
+            </tr>
+          </thead>
+          <tbody id="resultsTableBody"></tbody>
+        </table>
+      </div>
+      <div id="conclusion" class="conclusion"></div>
+    </section>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
