@@ -7,7 +7,7 @@ import {
   ktFromModulesPercent,
 } from './calculator.js';
 import { NOVELTY_KN, STAGE_COEFFS } from './labor-table.js';
-import { buildSectionSolutions } from './solutions.js';
+import { buildFormulaCalcs } from './solutions.js';
 
 const els = {
   productName: document.getElementById('productName'),
@@ -45,16 +45,9 @@ const els = {
   laborTableBody: document.getElementById('laborTableBody'),
   resultsTableBody: document.getElementById('resultsTableBody'),
   conclusion: document.getElementById('conclusion'),
-  calcSection61: document.getElementById('calcSection61'),
-  calcSection62: document.getElementById('calcSection62'),
-  calcSection63: document.getElementById('calcSection63'),
-  calcSection647: document.getElementById('calcSection647'),
-  calcSection6910: document.getElementById('calcSection6910'),
-  calcSection1116: document.getElementById('calcSection1116'),
   volCatalogTotal: document.getElementById('volCatalogTotal'),
   volRefinedSum: document.getElementById('volRefinedSum'),
   refinedVolumeOverride: document.getElementById('refinedVolumeOverride'),
-  normativeLabor: document.getElementById('normativeLabor'),
   laborRowInfo: document.getElementById('laborRowInfo'),
   depreciationBody: document.getElementById('depreciationBody'),
 };
@@ -258,14 +251,12 @@ function renderResults(result) {
     : `<p>Проект экономически нецелесообразен при текущих параметрах: прибыль ${formatNum(result.profit, 2)} руб.</p>`;
 }
 
-function renderSectionSolutions(input, result) {
-  const solutions = buildSectionSolutions(input, result);
-  els.calcSection61.innerHTML = solutions.section61;
-  els.calcSection62.innerHTML = solutions.section62;
-  els.calcSection63.innerHTML = solutions.section63;
-  els.calcSection647.innerHTML = solutions.section647;
-  els.calcSection6910.innerHTML = solutions.section6910;
-  els.calcSection1116.innerHTML = solutions.section1116;
+function renderFormulaCalcs(input, result) {
+  const calcs = buildFormulaCalcs(input, result);
+  document.querySelectorAll('[data-calc]').forEach((el) => {
+    const key = el.dataset.calc;
+    el.innerHTML = calcs[key] || '';
+  });
 }
 
 function recalculate() {
@@ -277,13 +268,12 @@ function recalculate() {
   if (!volumeOverrideManual && document.activeElement !== els.refinedVolumeOverride) {
     els.refinedVolumeOverride.value = result.volumes.refined || '';
   }
-  els.normativeLabor.textContent = formatInt(result.tn);
   els.laborRowInfo.textContent = `Приложение Г: строка «до ${formatInt(result.laborRow.vol)} LOC», группа сложности ${result.complexityGroup}`;
 
   renderLaborTable(result);
   renderDepreciation(result, input);
   renderResults(result);
-  renderSectionSolutions(input, result);
+  renderFormulaCalcs(input, result);
 }
 
 function escapeHtml(text) {
