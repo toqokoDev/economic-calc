@@ -66,6 +66,7 @@
           <textarea class="field__control field__control--textarea" id="productFunctions"></textarea>
         </label>
       </div>
+      <div id="calcSection61" class="calc-solutions"></div>
     </section>
 
     <section>
@@ -109,6 +110,7 @@
         </label>
         <p class="field__hint">Если пусто — используется сумма столбца «уточнённый».</p>
       </div>
+      <div id="calcSection62" class="calc-solutions"></div>
     </section>
 
     <section>
@@ -138,6 +140,7 @@
           <tbody id="laborTableBody"></tbody>
         </table>
       </div>
+      <div id="calcSection63" class="calc-solutions"></div>
     </section>
 
     <section>
@@ -182,10 +185,27 @@
       </div>
       <div class="formula-list">
         <div class="formula">
+          <span class="formula__expr">C<sub>зм</sub> = C<sub>зм</sub><sup>1</sup> · K<sub>т</sub></span>
+          <span class="formula__num">(3)</span>
+        </div>
+        <div class="formula">
           <span class="formula__expr">C<sub>оз</sub> = C<sub>зд</sub> · T<sub>o</sub> · K<sub>п</sub> · K<sub>пр</sub></span>
           <span class="formula__num">(4)</span>
         </div>
+        <div class="formula">
+          <span class="formula__expr">C<sub>дз</sub> = (C<sub>оз</sub> · H<sub>дз</sub>) / 100</span>
+          <span class="formula__num">(5)</span>
+        </div>
+        <div class="formula">
+          <span class="formula__expr">C<sub>фсзн</sub> = ((C<sub>оз</sub> + C<sub>дз</sub>) · H<sub>фсзн</sub>) / 100</span>
+          <span class="formula__num">(6)</span>
+        </div>
+        <div class="formula">
+          <span class="formula__expr">C<sub>бгс</sub> = ((C<sub>оз</sub> + C<sub>дз</sub>) · H<sub>бгс</sub>) / 100</span>
+          <span class="formula__num">(7)</span>
+        </div>
       </div>
+      <div id="calcSection647" class="calc-solutions"></div>
     </section>
 
     <section>
@@ -229,7 +249,20 @@
           <span class="formula__expr">Э = K<sub>э</sub> · T<sub>э</sub> · Д</span>
           <span class="formula__num">(8)</span>
         </div>
+        <div class="formula">
+          <span class="formula__expr">N<sub>а</sub> = 1 / T<sub>н</sub> · 100</span>
+          <span class="formula__num">(9)</span>
+        </div>
+        <div class="formula">
+          <span class="formula__expr">AО<sub>г</sub> = P<sub>с</sub> · N<sub>а</sub> / 100</span>
+          <span class="formula__num">(10)</span>
+        </div>
+        <div class="formula">
+          <span class="formula__expr">AО<sub>пп</sub> = AО<sub>г</sub> / F<sub>э</sub> · Д</span>
+          <span class="formula__num">(11)</span>
+        </div>
       </div>
+      <div id="calcSection6910" class="calc-solutions"></div>
       <p class="table-title">Таблица 8 – Расчёт амортизации основных средств</p>
       <div class="table-wrap">
         <table>
@@ -271,8 +304,20 @@
       </div>
       <div class="formula-list">
         <div class="formula">
-          <span class="formula__expr">C<sub>р</sub> = C<sub>оз</sub> + C<sub>дз</sub> + C<sub>фсзн</sub> + C<sub>бгс</sub> + Э + АО<sub>пп</sub> + C<sub>пз</sub> + C<sub>нр</sub></span>
+          <span class="formula__expr">C<sub>пз</sub> = (C<sub>оз</sub> · H<sub>пз</sub>) / 100</span>
+          <span class="formula__num">(12)</span>
+        </div>
+        <div class="formula">
+          <span class="formula__expr">C<sub>нр</sub> = (C<sub>оз</sub> · H<sub>нр</sub>) / 100</span>
+          <span class="formula__num">(13)</span>
+        </div>
+        <div class="formula">
+          <span class="formula__expr">C<sub>р</sub> = C<sub>оз</sub> + C<sub>дз</sub> + C<sub>фсзн</sub> + C<sub>бгс</sub> + Э + AО<sub>пп</sub> + C<sub>пз</sub> + C<sub>нр</sub></span>
           <span class="formula__num">(14)</span>
+        </div>
+        <div class="formula">
+          <span class="formula__expr">C<sub>рса</sub> = (C<sub>р</sub> · H<sub>рса</sub>) / 100</span>
+          <span class="formula__num">(15)</span>
         </div>
         <div class="formula">
           <span class="formula__expr">C<sub>п</sub> = C<sub>р</sub> + C<sub>рса</sub></span>
@@ -282,12 +327,16 @@
           <span class="formula__expr">П<sub>пс</sub> = Ц<sub>р</sub> / 1,2 − C<sub>п</sub></span>
           <span class="formula__num">(17)</span>
         </div>
+        <div class="formula">
+          <span class="formula__expr">У<sub>рент</sub> = П<sub>пс</sub> / C<sub>п</sub> · 100</span>
+          <span class="formula__num">(18)</span>
+        </div>
       </div>
+      <div id="calcSection1116" class="calc-solutions"></div>
     </section>
 
     <section>
       <h2>6.17 Результаты расчётов</h2>
-      <div id="summaryBlocks" class="results-grid"></div>
       <p class="table-title">Таблица 9 – Результаты расчётов</p>
       <div class="table-wrap">
         <table>

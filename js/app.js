@@ -7,6 +7,7 @@ import {
   ktFromModulesPercent,
 } from './calculator.js';
 import { NOVELTY_KN, STAGE_COEFFS } from './labor-table.js';
+import { buildSectionSolutions } from './solutions.js';
 
 const els = {
   productName: document.getElementById('productName'),
@@ -43,8 +44,13 @@ const els = {
   functionsBody: document.getElementById('functionsBody'),
   laborTableBody: document.getElementById('laborTableBody'),
   resultsTableBody: document.getElementById('resultsTableBody'),
-  summaryBlocks: document.getElementById('summaryBlocks'),
   conclusion: document.getElementById('conclusion'),
+  calcSection61: document.getElementById('calcSection61'),
+  calcSection62: document.getElementById('calcSection62'),
+  calcSection63: document.getElementById('calcSection63'),
+  calcSection647: document.getElementById('calcSection647'),
+  calcSection6910: document.getElementById('calcSection6910'),
+  calcSection1116: document.getElementById('calcSection1116'),
   volCatalogTotal: document.getElementById('volCatalogTotal'),
   volRefinedSum: document.getElementById('volRefinedSum'),
   refinedVolumeOverride: document.getElementById('refinedVolumeOverride'),
@@ -245,23 +251,21 @@ function renderResults(result) {
     })
     .join('');
 
-  const { salary, totalLabor } = result;
-  const input = readInput();
-  els.summaryBlocks.innerHTML = `
-    <div class="formula-result">K<sub>с</sub> = 1 + ${formatNum(result.kc - 1, 2)} = ${formatNum(result.kc, 2)}</div>
-    <div class="formula-result">Т<sub>н</sub> = ${formatInt(result.tn)} чел.-дн.</div>
-    <div class="formula-result">Т<sub>о</sub> = ${formatInt(totalLabor)} чел.-дн.</div>
-    <div class="formula-result">C<sub>зм</sub> = ${formatNum(salary.czm1, 2)} · ${formatNum(salary.tariffCoeff, 2)} = ${formatNum(salary.czm, 2)} руб.</div>
-    <div class="formula-result">C<sub>оз</sub> = ${formatNum(salary.czd, 2)} · ${formatInt(totalLabor)} · ${formatNum(input.naturalLossKp, 2)} · ${formatNum(input.bonusKpr, 2)} = ${formatNum(salary.coz, 2)} руб.</div>
-    <div class="formula-result formula-result--primary">C<sub>р</sub> = ${formatNum(result.cr, 2)} руб. &emsp;|&emsp; C<sub>п</sub> = ${formatNum(result.cp, 2)} руб.</div>
-    <div class="formula-result">П<sub>пс</sub> = ${formatNum(result.marketPrice, 2)} / 1,2 − ${formatNum(result.cp, 2)} = ${formatNum(result.profit, 2)} руб.</div>
-    <div class="formula-result">У<sub>рент</sub> = ${formatNum(result.profitability, 2)}%</div>`;
-
   const profitable = result.profit > 0;
   els.conclusion.className = `conclusion ${profitable ? 'positive' : 'negative'}`;
   els.conclusion.innerHTML = profitable
     ? `<p>Проект экономически целесообразен: прибыль ${formatNum(result.profit, 2)} руб., рентабельность ${formatNum(result.profitability, 2)}%.</p>`
     : `<p>Проект экономически нецелесообразен при текущих параметрах: прибыль ${formatNum(result.profit, 2)} руб.</p>`;
+}
+
+function renderSectionSolutions(input, result) {
+  const solutions = buildSectionSolutions(input, result);
+  els.calcSection61.innerHTML = solutions.section61;
+  els.calcSection62.innerHTML = solutions.section62;
+  els.calcSection63.innerHTML = solutions.section63;
+  els.calcSection647.innerHTML = solutions.section647;
+  els.calcSection6910.innerHTML = solutions.section6910;
+  els.calcSection1116.innerHTML = solutions.section1116;
 }
 
 function recalculate() {
@@ -279,6 +283,7 @@ function recalculate() {
   renderLaborTable(result);
   renderDepreciation(result, input);
   renderResults(result);
+  renderSectionSolutions(input, result);
 }
 
 function escapeHtml(text) {

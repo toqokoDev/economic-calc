@@ -207,6 +207,71 @@ section h2 {
   padding-left: 14px;
 }
 
+/* ── Calculation solutions ── */
+
+.calc-solutions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.calc-step {
+  background: var(--accent-soft);
+  border: 1px solid #9ae6b4;
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-family: var(--formula-font);
+  font-size: 1rem;
+  line-height: 1.55;
+  color: #1a4332;
+}
+
+.calc-step__head {
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #22543d;
+}
+
+.calc-step__num {
+  display: inline-block;
+  min-width: 28px;
+  color: var(--muted);
+  font-style: italic;
+  font-weight: 600;
+}
+
+.calc-step__line {
+  margin: 4px 0 0;
+  font-family: var(--ui-font);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.calc-step__line sub,
+.calc-step__line sup {
+  font-family: var(--formula-font);
+  font-size: 0.85em;
+}
+
+.calc-step__result {
+  margin: 8px 0 0;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.65);
+  border-radius: 5px;
+  font-weight: 700;
+  font-family: var(--formula-font);
+  font-size: 1.05rem;
+  color: #22543d;
+}
+
+.calc-step__result sub,
+.calc-step__result sup {
+  font-size: 0.75em;
+}
+
 /* ── Fields ── */
 
 .fields-grid {
