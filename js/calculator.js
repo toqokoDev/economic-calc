@@ -85,7 +85,7 @@ export function calculateAll(input) {
       ? Number(input.refinedVolumeOverride)
       : volumes.refined;
 
-  const kc = 1 + (Number(input.complexityKi) || 0);
+  const kc = round2(1 + (Number(input.complexityKi) || 0));
   const kn = Number(input.noveltyKn) || 0.72;
   const kt = Number(input.modulesKt) || 0.55;
   const complexityGroup = Number(input.complexityGroup) || 2;
@@ -98,7 +98,7 @@ export function calculateAll(input) {
 
   const stageDistribution = STAGE_KEYS.map((key, idx) => {
     const coeff = stageCoeffs[key];
-    const stageTn = tn * coeff;
+    const stageTn = round2(tn * coeff);
     const labor =
       key === 'rp'
         ? Math.round(stageTn * kc * kt * kn)
@@ -117,20 +117,21 @@ export function calculateAll(input) {
   const czm1 = Number(input.tariffGrade1) || 297;
   const tariffCoeff = Number(input.tariffCoeff) || 2.84;
   const workDaysPerMonth = Number(input.workDaysPerMonth) || 21.5;
-  const czm = czm1 * tariffCoeff;
-  const czd = czm / workDaysPerMonth;
+  const czm = round2(czm1 * tariffCoeff);
+  const czd = round2(czm / workDaysPerMonth);
   const kp = Number(input.naturalLossKp) || 1.1;
   const kpr = Number(input.bonusKpr) || 1.2;
   const coz = round2(czd * totalLabor * kp * kpr);
 
   const hdz = Number(input.extraSalaryPercent) || 10;
   const cdz = round2((coz * hdz) / 100);
+  const salaryBase = round2(coz + cdz);
 
   const hfszn = Number(input.fsznPercent) || 35;
-  const cfszn = round2(((coz + cdz) * hfszn) / 100);
+  const cfszn = round2((salaryBase * hfszn) / 100);
 
   const hbgs = Number(input.bgsPercent) || 0.3;
-  const cbgs = round2(((coz + cdz) * hbgs) / 100);
+  const cbgs = round2((salaryBase * hbgs) / 100);
 
   const ke = Number(input.electricityTariff) || 0.43196;
   const te = Number(input.electricityKwhPerDay) || 4;
@@ -139,9 +140,10 @@ export function calculateAll(input) {
   const assetCost = Number(input.assetCost) || 0;
   const serviceLife = Number(input.assetServiceLife) || 10;
   const fe = Number(input.effectiveFundDays) || 253;
-  const na = serviceLife > 0 ? (1 / serviceLife) * 100 : 0;
+  const na = serviceLife > 0 ? round2((1 / serviceLife) * 100) : 0;
   const aog = round2((assetCost * na) / 100);
-  const aopp = round2((aog / fe) * totalLabor);
+  const aogDaily = round2(aog / fe);
+  const aopp = round2(aogDaily * totalLabor);
 
   const hpz = Number(input.otherCostsPercent) || 10;
   const cpz = round2((coz * hpz) / 100);
@@ -150,7 +152,9 @@ export function calculateAll(input) {
   const cnr = round2((coz * hnr) / 100);
 
   const materials = Number(input.materialsCost) || 0;
-  const cr = round2(coz + cdz + cfszn + cbgs + electricity + aopp + cpz + cnr + materials);
+  const cr = round2(
+    round2(coz + cdz + cfszn + cbgs + electricity + aopp + cpz + cnr) + materials
+  );
 
   const hrsa = Number(input.supportPercent) || 10;
   const crsa = round2((cr * hrsa) / 100);
@@ -158,7 +162,8 @@ export function calculateAll(input) {
   const cp = round2(cr + crsa);
 
   const marketPrice = Number(input.marketPrice) || 0;
-  const profit = round2(marketPrice / 1.2 - cp);
+  const marketPriceNet = round2(marketPrice / 1.2);
+  const profit = round2(marketPriceNet - cp);
   const profitability = cp > 0 ? round2((profit / cp) * 100) : 0;
 
   return {
@@ -174,10 +179,11 @@ export function calculateAll(input) {
     totalLabor,
     salary: { czm1, tariffCoeff, czm, czd, coz },
     cdz,
+    salaryBase,
     cfszn,
     cbgs,
     electricity: { ke, te, days: totalLabor, total: electricity },
-    depreciation: { na, aog, aopp, fe, serviceLife, assetCost },
+    depreciation: { na, aog, aogDaily, aopp, fe, serviceLife, assetCost },
     cpz,
     cnr,
     materials,
@@ -185,6 +191,7 @@ export function calculateAll(input) {
     crsa,
     cp,
     marketPrice,
+    marketPriceNet,
     profit,
     profitability,
     programmersCount: Number(input.programmersCount) || 1,

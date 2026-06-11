@@ -23,8 +23,8 @@ export function buildFormulaCalcs(input, result) {
   const noveltyLabel = noveltyLabels[input.noveltyGroup] || input.noveltyGroup;
   const catalogSum = fnSumLine(functions, 'catalog');
   const refinedSum = fnSumLine(functions, 'refined');
-  const czd = salary.czm / input.workDaysPerMonth;
-  const { na, aog, aopp, assetCost, serviceLife, fe } = depreciation;
+  const czd = salary.czd;
+  const { na, aog, aogDaily, aopp, assetCost, serviceLife, fe } = depreciation;
   const materials = result.materials;
 
   const stageLines = stageDistribution.map(
@@ -107,12 +107,12 @@ export function buildFormulaCalcs(input, result) {
 
     6: calcBlock(
       [],
-      `C<sub>фсзн</sub> = ((${formatNum(salary.coz, 2)} + ${formatNum(result.cdz, 2)}) · ${formatNum(input.fsznPercent, 1)}) / 100 = ${formatNum(result.cfszn, 2)} руб.`
+      `C<sub>фсзн</sub> = (${formatNum(salary.coz, 2)} + ${formatNum(result.cdz, 2)}) · ${formatNum(input.fsznPercent, 1)} / 100 = ${formatNum(result.cfszn, 2)} руб.`
     ),
 
     7: calcBlock(
       [],
-      `C<sub>бгс</sub> = ((${formatNum(salary.coz, 2)} + ${formatNum(result.cdz, 2)}) · ${formatNum(input.bgsPercent, 2)}) / 100 = ${formatNum(result.cbgs, 2)} руб.`
+      `C<sub>бгс</sub> = (${formatNum(salary.coz, 2)} + ${formatNum(result.cdz, 2)}) · ${formatNum(input.bgsPercent, 2)} / 100 = ${formatNum(result.cbgs, 2)} руб.`
     ),
 
     8: calcBlock(
@@ -131,7 +131,7 @@ export function buildFormulaCalcs(input, result) {
 
     11: calcBlock(
       [],
-      `AО<sub>пп</sub> = ${formatNum(aog, 2)} / ${formatInt(fe)} · ${formatInt(result.totalLabor)} = ${formatNum(aopp, 2)} руб.`
+      `AО<sub>пп</sub> = ${formatNum(aog, 2)} / ${formatInt(fe)} = ${formatNum(aogDaily, 2)} руб./день; ${formatNum(aogDaily, 2)} · ${formatInt(result.totalLabor)} = ${formatNum(aopp, 2)} руб.`
     ),
 
     12: calcBlock(
@@ -158,7 +158,7 @@ export function buildFormulaCalcs(input, result) {
 
     17: calcBlock(
       [`Ц<sub>р</sub> = ${formatNum(result.marketPrice, 2)} руб. (с НДС).`],
-      `П<sub>пс</sub> = ${formatNum(result.marketPrice, 2)} / 1,2 − ${formatNum(result.cp, 2)} = ${formatNum(result.profit, 2)} руб.`
+      `П<sub>пс</sub> = ${formatNum(result.marketPrice, 2)} / 1,2 − ${formatNum(result.cp, 2)} = ${formatNum(result.marketPriceNet, 2)} − ${formatNum(result.cp, 2)} = ${formatNum(result.profit, 2)} руб.`
     ),
 
     18: calcBlock(
