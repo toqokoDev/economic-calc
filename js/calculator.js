@@ -142,8 +142,8 @@ export function calculateAll(input) {
   const fe = Number(input.effectiveFundDays) || 253;
   const na = serviceLife > 0 ? round2((1 / serviceLife) * 100) : 0;
   const aog = round2((assetCost * na) / 100);
-  const aogDaily = round2(aog / fe);
-  const aopp = round2(aogDaily * totalLabor);
+  const aogDaily = aog / fe;
+  const aopp = round2((aog / fe) * totalLabor);
 
   const hpz = Number(input.otherCostsPercent) || 10;
   const cpz = round2((coz * hpz) / 100);

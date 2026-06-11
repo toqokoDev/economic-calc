@@ -24,7 +24,7 @@ export function buildFormulaCalcs(input, result) {
   const catalogSum = fnSumLine(functions, 'catalog');
   const refinedSum = fnSumLine(functions, 'refined');
   const czd = salary.czd;
-  const { na, aog, aogDaily, aopp, assetCost, serviceLife, fe } = depreciation;
+  const { na, aog, aopp, assetCost, serviceLife, fe } = depreciation;
   const materials = result.materials;
 
   const stageLines = stageDistribution.map(
@@ -131,7 +131,7 @@ export function buildFormulaCalcs(input, result) {
 
     11: calcBlock(
       [],
-      `AО<sub>пп</sub> = ${formatNum(aog, 2)} / ${formatInt(fe)} = ${formatNum(aogDaily, 2)} руб./день; ${formatNum(aogDaily, 2)} · ${formatInt(result.totalLabor)} = ${formatNum(aopp, 2)} руб.`
+      `AО<sub>пп</sub> = ${formatNum(aog, 2)} / ${formatInt(fe)} · ${formatInt(result.totalLabor)} = ${formatNum(aopp, 2)} руб.`
     ),
 
     12: calcBlock(
